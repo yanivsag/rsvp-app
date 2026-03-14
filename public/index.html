@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אישור הגעה - בר מצווה</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Hero Section -->
+    <header class="hero">
+      <div class="decorative-top">✡</div>
+      <h1>בר מצווה</h1>
+      <p class="subtitle">אנו שמחים להזמינכם לחגוג עמנו</p>
+    </header>
+
+    <!-- Event Details -->
+    <section class="event-details">
+      <div class="detail-card">
+        <span class="icon">📅</span>
+        <h3>מתי</h3>
+        <p>26 במרץ 2026</p>
+      </div>
+      <div class="detail-card">
+        <span class="icon">🏛️</span>
+        <h3>איפה</h3>
+        <p>בית הכנסת בכרמית</p>
+        <p class="address">דרורית 42, מיתר</p>
+      </div>
+      <div class="detail-card">
+        <a href="https://www.google.com/maps/search/?api=1&query=דרורית+42+מיתר" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           class="nav-link">
+          <span class="icon">🗺️</span>
+          <h3>ניווט לאירוע</h3>
+          <p>לחצו כאן לפתיחת מפה</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- RSVP Form -->
+    <section class="rsvp-section">
+      <h2>אישור הגעה</h2>
+      <p class="form-description">נשמח לדעת אם תוכלו להגיע לשמוח עמנו</p>
+      
+      <form id="rsvpForm" novalidate>
+        <div class="form-group">
+          <label for="fullName">שם מלא *</label>
+          <input type="text" id="fullName" name="full_name" required 
+                 placeholder="הזינו את שמכם המלא" maxlength="200">
+          <span class="error-message" id="nameError"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">טלפון</label>
+          <input type="tel" id="phone" name="phone" 
+                 placeholder="מספר טלפון ליצירת קשר" maxlength="20">
+        </div>
+
+        <div class="form-group">
+          <label>האם תגיעו? *</label>
+          <div class="radio-group">
+            <label class="radio-option attending-yes">
+              <input type="radio" name="attending" value="yes" required>
+              <span class="radio-label">כן, נגיע! 🎉</span>
+            </label>
+            <label class="radio-option attending-no">
+              <input type="radio" name="attending" value="no">
+              <span class="radio-label">לצערנו לא נוכל 😔</span>
+            </label>
+          </div>
+          <span class="error-message" id="attendingError"></span>
+        </div>
+
+        <div class="form-group guest-count-group" id="guestCountGroup" style="display: none;">
+          <label for="guestCount">מספר אורחים (כולל אתכם)</label>
+          <div class="counter">
+            <button type="button" class="counter-btn" id="decreaseBtn" aria-label="הפחת אורח">−</button>
+            <input type="number" id="guestCount" name="guest_count" 
+                   value="1" min="1" max="50" readonly>
+            <button type="button" class="counter-btn" id="increaseBtn" aria-label="הוסף אורח">+</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="notes">הערות נוספות</label>
+          <textarea id="notes" name="notes" rows="3" 
+                    placeholder="הערות, ברכות, או מידע נוסף..." maxlength="500"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="btn-text">שליחת אישור הגעה</span>
+          <span class="btn-loading" style="display: none;">שולח...</span>
+        </button>
+      </form>
+
+      <!-- Success Message -->
+      <div id="successMessage" class="success-message" style="display: none;">
+        <div class="success-icon">✓</div>
+        <h3 id="successTitle">תודה רבה!</h3>
+        <p id="successText">אישור ההגעה שלכם נקלט בהצלחה</p>
+        <button class="new-rsvp-btn" id="newRsvpBtn">שליחת אישור נוסף</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>נשמח לראותכם! 🎉</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
