@@ -1,5 +1,6 @@
 const express = require('express');
 const Database = require('better-sqlite3');
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 const fs = require('fs');
 
@@ -34,6 +35,16 @@ db.exec(`
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'יותר מדי בקשות, נסו שוב מאוחר יותר' }
+});
+app.use('/api/', apiLimiter);
 
 // API: Submit RSVP
 app.post('/api/rsvp', (req, res) => {
