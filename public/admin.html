@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניהול אישורי הגעה - בר מצווה</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="hero" style="padding: 24px 20px;">
+      <h1 style="font-size: 1.8em;">ניהול אישורי הגעה</h1>
+      <p class="subtitle"><a href="/" style="color: white;">חזרה לדף הראשי</a></p>
+    </header>
+
+    <section class="admin-section">
+      <div class="admin-header">
+        <h2>סיכום</h2>
+        <button class="refresh-btn" id="refreshBtn">🔄 רענון</button>
+      </div>
+
+      <div class="summary-cards" id="summaryCards">
+        <div class="summary-card">
+          <div class="number" id="totalResponses">0</div>
+          <div class="label">סה״כ תגובות</div>
+        </div>
+        <div class="summary-card">
+          <div class="number" id="attendingCount">0</div>
+          <div class="label">מגיעים</div>
+        </div>
+        <div class="summary-card">
+          <div class="number" id="notAttendingCount">0</div>
+          <div class="label">לא מגיעים</div>
+        </div>
+        <div class="summary-card">
+          <div class="number" id="totalGuests">0</div>
+          <div class="label">סה״כ אורחים</div>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="rsvp-table" id="rsvpTable">
+          <thead>
+            <tr>
+              <th>שם</th>
+              <th>טלפון</th>
+              <th>הגעה</th>
+              <th>אורחים</th>
+              <th>הערות</th>
+              <th>תאריך</th>
+            </tr>
+          </thead>
+          <tbody id="rsvpTableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <p>אין אישורי הגעה עדיין</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>ניהול אירוע - בר מצווה 🎉</p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadRSVPs();
+
+      document.getElementById('refreshBtn').addEventListener('click', loadRSVPs);
+    });
+
+    async function loadRSVPs() {
+      try {
+        const response = await fetch('/api/rsvps');
+        const data = await response.json();
+
+        // Update summary
+        document.getElementById('totalResponses').textContent = data.summary.totalResponses;
+        document.getElementById('attendingCount').textContent = data.summary.attendingCount;
+        document.getElementById('notAttendingCount').textContent = data.summary.notAttendingCount;
+        document.getElementById('totalGuests').textContent = data.summary.totalGuests;
+
+        // Update table
+        const tbody = document.getElementById('rsvpTableBody');
+        const emptyState = document.getElementById('emptyState');
+        const table = document.getElementById('rsvpTable');
+
+        if (data.rsvps.length === 0) {
+          table.style.display = 'none';
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        table.style.display = 'table';
+        emptyState.style.display = 'none';
+
+        tbody.innerHTML = data.rsvps.map(rsvp => `
+          <tr>
+            <td>${escapeHtml(rsvp.full_name)}</td>
+            <td>${escapeHtml(rsvp.phone || '-')}</td>
+            <td>${rsvp.attending ? '<span class="badge-yes">מגיע</span>' : '<span class="badge-no">לא מגיע</span>'}</td>
+            <td>${rsvp.attending ? rsvp.guest_count : '-'}</td>
+            <td>${escapeHtml(rsvp.notes || '-')}</td>
+            <td>${formatDate(rsvp.created_at)}</td>
+          </tr>
+        `).join('');
+      } catch {
+        alert('אירעה שגיאה בטעינת הנתונים');
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('he-IL', {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+  </script>
+</body>
+</html>
