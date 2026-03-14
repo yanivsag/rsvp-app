@@ -107,8 +107,16 @@ app.get('/api/rsvps', (req, res) => {
   }
 });
 
+// Rate limiting for pages
+const pageLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 // Serve the main page for all non-API routes
-app.get('/{*splat}', (req, res) => {
+app.get('/{*splat}', pageLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
